@@ -3,7 +3,7 @@ on: [push,workflow_dispatch]
 jobs:
   matrix-test:
     runs-on: ${{ matrix.os }}
-     strategy:
+    strategy:
        matrix:
          os: [windows-latest,ubuntu-latest]
          node_version: [18,15]
