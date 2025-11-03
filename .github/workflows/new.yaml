@@ -1,4 +1,4 @@
-name: test and upload to docker
+name: test and upload
 on: [push,workflow_dispatch]
 jobs:
   version-test:
@@ -6,7 +6,7 @@ jobs:
     strategy:
        matrix:
          os: [windows-latest,ubuntu-latest]
-         node_version: [16,18]
+         node_version: [17,18]
     steps:
       - name: checkout the code
         uses: actions/checkout@v3
@@ -14,26 +14,25 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node_version }}
-      - name: version
+      - name: version print
         run: node -v
-        
-        
          
-  test-app:
+  build-app:
     runs-on: ubuntu-latest
     steps:
       - name: checkout the code
         uses: actions/checkout@v3
-      - name: downlaod node
-        uses: actions/setup-node@v3
-      - name: install dependacny
+      - name: install dependancy
         run: npm install
-      - name: test app
-        run: npm test
-    
+      - name: download node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+      - name: build app
+        run: npm run build
   upload-docker:
-    runs-on: ubuntu-latest
-    steps:
+     runs-on: ubuntu-latest
+     steps:
       - name: checkout the code
         uses: actions/checkout@v3
       - name: login to docker
@@ -49,3 +48,5 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.USERNAME }}/repo:latest
+          
+    
