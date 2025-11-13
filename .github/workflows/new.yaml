@@ -1,52 +1,19 @@
-name: test and upload
+name: build and upload to docker
 on: [push,workflow_dispatch]
 jobs:
   version-test:
     runs-on: ${{ matrix.os }}
     strategy:
-       matrix:
-         os: [windows-latest,ubuntu-latest]
-         node_version: [17,18]
+        matrix:
+          os: [windows-latest,ubuntu-latest]
+          node: [15,16]
     steps:
-      - name: checkout the code
+      - name: pull the code
         uses: actions/checkout@v3
       - name: download node
-        uses: actions/setup-node@v3
+        uses: actions/setup@v3
         with:
-          node-version: ${{ matrix.node_version }}
-      - name: version print
+         node-version: ${{ matrix.node }}
+      - name: version
         run: node -v
-         
-  build-app:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout the code
-        uses: actions/checkout@v3
-      - name: install dependancy
-        run: npm install
-      - name: download node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
-      - name: build app
-        run: npm run build
-  upload-docker:
-     runs-on: ubuntu-latest
-     steps:
-      - name: checkout the code
-        uses: actions/checkout@v3
-      - name: login to docker
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
-      - name: setup buildx
-        uses: docker/setup-buildx-action@v3
-      - name: build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ secrets.USERNAME }}/repo:latest
-          
-    
+ 
